@@ -2,12 +2,22 @@ import 'package:flutter/material.dart';
 
 class NewInspectionPage extends StatefulWidget {
   const NewInspectionPage({super.key});
-
   @override
   State<NewInspectionPage> createState() => _NewInspectionPageState();
 }
 
 class _NewInspectionPageState extends State<NewInspectionPage> {
+  String? _selectedButton;
+  int _selectedIndex = -1;
+  final Map<String, String> _buttonLabels = {
+    'R1': '*Max 4 days',
+    'R2': '*Max 8 days',
+    'R3': '*Max 12 days',
+    'R4': '*Max 18 days',
+  };
+
+  // Store the index of the selected button
+
   DateTime? _selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -22,6 +32,68 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
         _selectedDate = picked;
       });
     }
+  }
+
+  double buttonSpacing = .0; // antar tmbl
+  double textSpacing = 4.0; // antar tmbl dan text
+  double rowSpacing = 22.0;
+
+  Widget _buildButton(String id, String label) {
+    bool isSelected = _selectedButton == id;
+
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () => _handleButtonClick(id),
+          style: ButtonStyle(
+            minimumSize: MaterialStateProperty.all(
+                Size(130, 50)), // Set width and height
+            backgroundColor: MaterialStateProperty.all(
+              isSelected
+                  ? Colors.white
+                  : Colors.white, // Button background color
+            ),
+            side: MaterialStateProperty.all(
+              BorderSide(
+                color: isSelected ? Color(0xFF45625E) : Colors.transparent,
+                width: 3,
+              ),
+            ),
+            foregroundColor: MaterialStateProperty.all(Color(0xFF45625E)
+                // Change text color to black
+                ),
+          ),
+          child: Text(
+            id,
+            style: TextStyle(
+              fontSize: 18, // Set the desired text size here
+              fontWeight:
+                  FontWeight.bold, // Optional: Set the desired font weight
+            ),
+          ),
+        ),
+        SizedBox(height: textSpacing), // Space between button and text
+        Text(
+          _buttonLabels[id] ?? 'Max 4 days', // Default text if label not set
+          style: TextStyle(
+            fontSize: 14, // Adjust text size if needed
+            color: Color(0xFF45625E), // Adjust text color if needed
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleButtonClick(String buttonId) {
+    setState(() {
+      _selectedButton = buttonId;
+    });
+  }
+
+  void _onChipSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -367,7 +439,42 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'pattern',
+                      'Status',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        contentPadding: EdgeInsets.only(left: 20),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Pattern',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -475,7 +582,7 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Status',
+                      'Total Injuries',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -542,74 +649,57 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
                     ),
                   ),
                   const SizedBox(height: 20.0),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: const Text(
-                      'RTD (mm)',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Container(
+                    padding: EdgeInsets.all(9),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE2E2E2), // Hex color #E2E2E2
+                      borderRadius: BorderRadius.circular(
+                          20), // Optional: Adjust border radius if needed
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 12.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize
+                          .min, // Use min to avoid unnecessary space
+                      children: [
+                        Align(
+                          alignment: Alignment
+                              .topCenter, // Align text to the top center
+                          child: Text(
+                            'Repair Duration', // Replace with the content you want
+                            style: TextStyle(
+                              color: Color(0xFF45625E), // Text color
+                              fontSize: 20, // Adjust text size if needed
+                              fontWeight: FontWeight
+                                  .bold, // Optional: Adjust text weight if needed
                             ),
+                            textAlign: TextAlign
+                                .center, // Center align text within the widget
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text('/'),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 12.0),
+                        SizedBox(height: 15), // Space between text and buttons
+                        // Use a Column to stack the rows of buttons
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .spaceEvenly, // Distribute space evenly
+                              children: [
+                                _buildButton('R1', 'R1'),
+                                _buildButton('R2', 'R2'),
+                              ],
                             ),
-                          ),
+                            SizedBox(height: rowSpacing), // Space between rows
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .spaceEvenly, // Distribute space evenly
+                              children: [
+                                _buildButton('R3', 'R3'),
+                                _buildButton('R4', 'R4'),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 20.0),
                   Align(
